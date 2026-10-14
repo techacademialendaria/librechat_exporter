@@ -3,11 +3,13 @@ FROM python:3.14-slim
 # Set the working directory
 WORKDIR /app
 
-COPY LICENSE metrics.py /app/
+# Install dependencies first so code changes reuse the cached layer.
+# Plain COPY instead of RUN --mount=type=bind: Railway's builder only
+# supports cache mounts.
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --requirement /tmp/requirements.txt
 
-# Install dependencies
-RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
-    pip install --no-cache-dir --requirement /tmp/requirements.txt
+COPY LICENSE metrics.py /app/
 
 # Expose the Prometheus port
 EXPOSE 8000
