@@ -2329,5 +2329,5 @@ if __name__ == "__main__":
     root.putChild(b"", metrics)
     root.putChild(b"metrics", metrics)
 
-    reactor.listenTCP(port, Site(root))
+    reactor.listenTCP(port, Site(root), interface="::")
     reactor.run()
